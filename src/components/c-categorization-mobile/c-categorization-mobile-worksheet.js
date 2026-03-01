@@ -41,7 +41,7 @@ class CCategorizationMobileWorksheet extends HTMLElement {
                     grid-template-columns: 1fr;
                     gap: 8px;
                     padding: 4px;
-            
+                    height: calc(100% - 8px);
                     max-height: calc(100% - 8px); /* minus two padding, top and bottom */
                 }
                 
@@ -120,8 +120,8 @@ class CCategorizationMobileWorksheet extends HTMLElement {
                 
                 .options-scroll-indicator svg,
                 .categories-scroll-indicator svg {
-                    width: 18px;
-                    height: 18px;
+                    width: 12px;
+                    height: 12px;
                     padding: 6px;
                     border-radius: 50%;
                     background-color: #ffffff;
@@ -222,6 +222,17 @@ class CCategorizationMobileWorksheet extends HTMLElement {
         this._initializeCategories(categoriesData);
     }
 
+    _changeSystemState(key, payload) {
+        this.dispatchEvent(new CustomEvent('system-state', {
+            detail: {
+                key,
+                ...payload,
+            },
+            bubbles: true,
+            composed: true,
+        }));
+    }
+
     _initializeOptionsTitle(title) {
         this._topTitleElement.textContent = title;
     }
@@ -259,6 +270,8 @@ class CCategorizationMobileWorksheet extends HTMLElement {
                 options,
             };
         });
+
+        this._toggleScrollIndicator(this._optionsElement, this._optionsScrollIndicatorElement);
     }
 
     _initializeCategories(categoriesMap) {
@@ -290,6 +303,16 @@ class CCategorizationMobileWorksheet extends HTMLElement {
                 includes: {},
             };
         });
+
+        this._toggleScrollIndicator(this._categoriesElement, this._categoriesScrollIndicatorElement);
+    }
+
+    _toggleScrollIndicator(container, indicator) {
+        if (container.scrollHeight <= container.clientHeight) {
+            indicator.setAttribute('hidden', 'true');
+        } else {
+            indicator.removeAttribute('hidden');
+        }
     }
 
     _registerListeners() {
@@ -343,6 +366,8 @@ class CCategorizationMobileWorksheet extends HTMLElement {
         this._categoriesMap[categoryId].includes = {};
 
         this._expandedElement.dispatchEvent(new CustomEvent(EVENT_EXTRACT_ALL));
+
+        this._toggleScrollIndicator(this._optionsElement, this._optionsScrollIndicatorElement);
     }
 
     _onExtract(event) {
@@ -363,6 +388,8 @@ class CCategorizationMobileWorksheet extends HTMLElement {
             );
         }
         delete this._categoriesMap[categoryId].includes[optionId];
+
+        this._toggleScrollIndicator(this._optionsElement, this._optionsScrollIndicatorElement);
     }
 
     _onSelect(event) {
@@ -404,17 +431,6 @@ class CCategorizationMobileWorksheet extends HTMLElement {
         this._changeSystemState('selected', {
             selectedOptions: optionsSelectedMapIds,
         })
-    }
-
-    _changeSystemState(key, payload) {
-        this.dispatchEvent(new CustomEvent('system-state', {
-            detail: {
-                key,
-                ...payload,
-            },
-            bubbles: true,
-            composed: true,
-        }));
     }
 
     _selectCategory(id) {
@@ -462,6 +478,10 @@ class CCategorizationMobileWorksheet extends HTMLElement {
             this._expandedElement.show();
             this._changeSystemState('expanded');
         }
+
+        setTimeout(() => {
+            this._toggleScrollIndicator(this._optionsElement, this._optionsScrollIndicatorElement);
+        }, 300);
     }
 
     _showFancy(event) {

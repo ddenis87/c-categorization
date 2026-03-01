@@ -1,4 +1,4 @@
-import './c-categorization-mobile-system.js';
+import '../c-system-bar.js';
 import './c-categorization-mobile-worksheet.js';
 import {EVENT_EXTRACT_ALL, EVENT_UNSELECT, STATE_EXPANDED, STATE_SELECTED} from "@/components/enum";
 
@@ -23,7 +23,7 @@ class CCategorizationMobile extends HTMLElement {
                     grid-template-columns: 1fr;
                     height: 100%;
                 }
-                c-categorization-mobile-system {
+                c-system-bar {
                     grid-area: system;
                 }
             
@@ -33,13 +33,13 @@ class CCategorizationMobile extends HTMLElement {
                 }
             </style>
             <div class="c-categorization-mobile">
-                <c-categorization-mobile-system></c-categorization-mobile-system>
+                <c-system-bar></c-system-bar>
                 <c-categorization-mobile-worksheet></c-categorization-mobile-worksheet>
             </div>`;
     }
 
     connectedCallback() {
-        this._system = this.shadowRoot.querySelector('c-categorization-mobile-system');
+        this._system = this.shadowRoot.querySelector('c-system-bar');
         this._worksheet = this.shadowRoot.querySelector('c-categorization-mobile-worksheet');
     }
 

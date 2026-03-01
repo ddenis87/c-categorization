@@ -123,6 +123,10 @@ class CCategorizationMobileItemExpanded extends HTMLElement {
 
     _extractAll() {
         this._content.innerHTML = '';
+
+        setTimeout(() => {
+            this._close();
+        }, 200);
     }
 
     _handleClick(event) {
